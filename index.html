@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>T-ESCORT</title>
+
+<style>
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    height: 100vh;
+    background: linear-gradient(135deg, #1a1a2e, #3a0ca3, #7209b7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+}
+
+.container {
+    width: 350px;
+    padding: 30px;
+    border-radius: 15px;
+    background: rgba(0,0,0,0.4);
+    backdrop-filter: blur(15px);
+    text-align: center;
+}
+
+.logo {
+    margin-bottom: 20px;
+}
+
+.logo .t {
+    color: #ff3c3c;
+    font-size: 48px;
+    font-style: italic;
+    font-family: cursive;
+}
+
+.logo .rest {
+    font-size: 40px;
+    font-family: serif;
+}
+
+.title {
+    margin: 20px 0;
+    font-weight: bold;
+    position: relative;
+}
+
+.title::after {
+    content: "";
+    width: 80px;
+    height: 3px;
+    background: #ff3c3c;
+    display: block;
+    margin: 5px auto;
+}
+
+.google-btn {
+    background: linear-gradient(90deg, #ff7a18, #ff3c3c);
+    border: none;
+    padding: 12px;
+    width: 100%;
+    border-radius: 25px;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.google-btn:hover {
+    opacity: 0.9;
+}
+
+.input-box {
+    margin-bottom: 15px;
+}
+
+.input-box input {
+    width: 100%;
+    padding: 12px;
+    border-radius: 10px;
+    border: 2px solid #444;
+    background: transparent;
+    color: white;
+}
+
+.input-box input:focus {
+    border-color: #ff3c3c;
+    outline: none;
+}
+
+.toggle-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin: 15px 0;
+}
+
+.switch {
+    position: relative;
+    width: 50px;
+    height: 26px;
+}
+
+.switch input {
+    opacity: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    background: #444;
+    border-radius: 50px;
+    top: 0; left: 0; right: 0; bottom: 0;
+    transition: 0.4s;
+}
+
+.slider::before {
+    content: "";
+    position: absolute;
+    height: 20px;
+    width: 20px;
+    left: 3px;
+    bottom: 3px;
+    background: white;
+    border-radius: 50%;
+    transition: 0.4s;
+}
+
+.switch input:checked + .slider {
+    background: linear-gradient(90deg, #ff7a18, #ff3c3c);
+}
+
+.switch input:checked + .slider::before {
+    transform: translateX(24px);
+}
+
+.link {
+    margin: 10px 0;
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.link:hover {
+    color: #ff7a18;
+}
+
+.btn {
+    width: 100%;
+    padding: 12px;
+    border-radius: 25px;
+    border: none;
+    margin-top: 10px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.login {
+    background: linear-gradient(90deg, #ff7a18, #ff3c3c);
+    color: white;
+}
+
+.register {
+    background: white;
+    color: #333;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="logo">
+        <span class="t">T</span><span class="rest">ESCORT</span>
+    </div>
+
+    <div class="title">S'IDENTIFIER</div>
+
+    <button class="google-btn" onclick="googleLogin()">
+        <span>G CONNEXION AVEC GOOGLE</span>
+        <span>→</span>
+    </button>
+
+    <div class="input-box">
+        <input type="text" id="email" placeholder="Courriel / Nom d'utilisateur">
+    </div>
+
+    <div class="input-box">
+        <input type="password" id="password" placeholder="Mot de Passe">
+    </div>
+
+    <div class="toggle-container">
+        <label class="switch">
+            <input type="checkbox" id="rememberMe" checked>
+            <span class="slider"></span>
+        </label>
+        <span>Rester connecté(e)</span>
+    </div>
+
+    <div class="link" onclick="forgotPassword()">Mot de Passe oublié?</div>
+
+    <button class="btn login" onclick="login()">S'IDENTIFIER</button>
+
+    <button class="btn register" onclick="register()">ENREGISTREZ-VOUS</button>
+
+</div>
+
+<script>
+
+function googleLogin() {
+    window.location.href = "https://accounts.google.com";
+}
+
+function forgotPassword() {
+    window.location.href = "reset-password.html";
+}
+
+// ✅ NOUVELLE FONCTION LOGIN CONNECTÉE AU BACKEND
+function login() {
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+    const remember = document.getElementById("rememberMe").checked;
+
+    fetch("http://localhost:3000/login", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            email,
+            password,
+            remember
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            alert("Connexion réussie");
+        } else {
+            alert("Échec de connexion");
+        }
+    })
+    .catch(() => {
+        alert("Erreur serveur");
+    });
+}
+
+function register() {
+    window.location.href = "register.html";
+}
+
+</script>
+
+</body>
+</html>
