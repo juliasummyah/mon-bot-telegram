@@ -5,6 +5,7 @@ const app = express();
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+app.use(express.static(path.join(__dirname)));
 
 // ✅ CETTE LIGNE DIT AU SERVEUR D'AFFICHER TON INTERFACE
 app.get('/', (req, res) => {
